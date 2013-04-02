@@ -27,7 +27,13 @@ class EventsController extends AppController {
        * 
        */
       function index($sortBy = 'hottest') {
-
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+	    );
             switch ($sortBy) {
                   case 'newest':
                         $orderBy = array('Event.created' => 'DESC'); //Is this the best ?
@@ -78,12 +84,33 @@ class EventsController extends AppController {
 
             $eventIds = $this->Event->extractKeys($events);
 
-	    $this->set(compact('events'));
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+
+	    $this->set(compact('events','latest_events','breadcrumbLinks'));
       }
 
       function post() { //post an event
-            $this->set('usesAutocomplete',true);
-            $this->set(compact('breadcrumbLinks'));
+           $this->set('usesAutocomplete',true);
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => 'Submit Event',
+			'link' => 'post',
+			'separator'=> '&raquo;'
+		),
+	    );
+
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+
+            $this->set(compact('breadcrumbLinks','latest_events'));
             $this->_requireAuth();
             //$highlighterSettings = cRead('syntaxHighlighter');
             //$this->set('codeTypes', $highlighterSettings['supportedTypes']);
@@ -130,6 +157,7 @@ class EventsController extends AppController {
                       'venue' => Sanitize::stripAll($subData['venue']),
                       'start' => Sanitize::stripAll($subData['start']),
                       'end' => Sanitize::stripAll($subData['end']),
+                      'registration_link' => Sanitize::stripAll($subData['registration_link'])
                   );
 
 		  //validate that end date does not precede end date
@@ -195,6 +223,19 @@ class EventsController extends AppController {
 
            $event = $this->_getEvent($eventId);
 
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => $event['Event']['name'],
+			'link' => "viewEvent/{$event['Event']['id']}/{$event['Event']['slug']}",
+			'separator'=> '&raquo;'
+		),
+	    );
+
             //Let's try to increase the view count
             $eventsViewed = $this->Session->read('eventsViewed');
             if (!$eventsViewed) {
@@ -207,7 +248,11 @@ class EventsController extends AppController {
                   $this->Event->increaseViewCount($eventId);
             }
 
-            $this->set(compact('eventId', 'eventSlug', 'event'));
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+
+            $this->set(compact('eventId', 'eventSlug', 'event','latest_events','breadcrumbLinks'));
             $highlighterSettings = cRead('syntaxHighlighter');
             $this->set('codeTypes', $highlighterSettings['supportedTypes']);
       }
@@ -222,7 +267,13 @@ class EventsController extends AppController {
                         $orderBy = array('Event.views' => 'DESC'); //Is this the best ?
             }
 
-            
+  	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+	    );        
 
 
             if (!empty($this->data) && isset($this->data['Search']['keywords'])) {
@@ -262,12 +313,33 @@ class EventsController extends AppController {
 
             $eventIds = $this->Event->extractKeys($events);
 
-	    $this->set(compact('events'));
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+
+	    $this->set(compact('events','latest_events','breadcrumbLinks'));
 	}
 
       function admin_post() { //post an event
             $this->set('usesAutocomplete',true);
-            $this->set(compact('breadcrumbLinks'));
+
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => 'Submit Event',
+			'link' => 'post',
+			'separator'=> '&raquo;'
+		),
+	    );
+
+            $this->set(compact('breadcrumbLinks','latest_events'));
             $this->_requireAuth();
             //$highlighterSettings = cRead('syntaxHighlighter');
             //$this->set('codeTypes', $highlighterSettings['supportedTypes']);
@@ -314,6 +386,7 @@ class EventsController extends AppController {
                       'venue' => Sanitize::stripAll($subData['venue']),
                       'start' => Sanitize::stripAll($subData['start']),
                       'end' => Sanitize::stripAll($subData['end']),
+                      'registration_link' => Sanitize::stripAll($subData['registration_link'])
                   );
 
 		  //validate that end date does not precede end date
@@ -339,7 +412,11 @@ class EventsController extends AppController {
 
       function admin_edit($eventId = '', $eventSlug = '') { //edit an event
             $this->set('usesAutocomplete',true);
-            $this->set(compact('breadcrumbLinks'));
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+
+
             $this->_requireAuth();
 
             $event = $this->_getAdminEvent($eventId);
@@ -387,7 +464,8 @@ class EventsController extends AppController {
                       'description' => Sanitize::stripAll($subData['description']),
                       'venue' => Sanitize::stripAll($subData['venue']),
                       'start' => Sanitize::stripAll($subData['start']),
-                      'end' => Sanitize::stripAll($subData['end'])
+                      'end' => Sanitize::stripAll($subData['end']),
+                      'registration_link' => Sanitize::stripAll($subData['registration_link'])
                   );
 
 		  //validate that end date does not precede end date
@@ -412,6 +490,21 @@ class EventsController extends AppController {
 		  $eventSlug = $this->Event->getSlug($eventId);
                   $this->miniFlash($message, "viewEvent/$eventId/$eventSlug");
             }
+
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => "Edit {$event['Event']['name']}",
+			'link' =>  "edit/{$event['Event']['id']}/{$event['Event']['slug']}",
+			'separator'=> '&raquo;'
+		),
+	    );
+
+            $this->set(compact('breadcrumbLinks','latest_events'));
 	    $this->set(compact('eventId', 'eventSlug', 'event'));
            
       }
@@ -419,6 +512,19 @@ class EventsController extends AppController {
 
            $this->_requireAuth();
            $event = $this->_getAdminEvent($eventId);
+
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Events',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => $event['Event']['name'],
+			'link' => "viewEvent/{$event['Event']['id']}/{$event['Event']['slug']}",
+			'separator'=> '&raquo;'
+		),
+	    );
 
             //Let's try to increase the view count
             $eventsViewed = $this->Session->read('eventsViewed');
@@ -431,8 +537,10 @@ class EventsController extends AppController {
                   $this->Session->write('eventsViewed', $eventsViewed);
                   $this->Event->increaseViewCount($eventId);
             }
-
-            $this->set(compact('eventId', 'eventSlug', 'event'));
+ 	    $latest_events = $this->Event->find('all', array('limit' => 5, 'order' => 'Event.created DESC','conditions'=>array(
+                'Event.published' => 1
+            ),));
+            $this->set(compact('eventId', 'eventSlug', 'event','latest_events','breadcrumbLinks'));
             $highlighterSettings = cRead('syntaxHighlighter');
             $this->set('codeTypes', $highlighterSettings['supportedTypes']);
       }

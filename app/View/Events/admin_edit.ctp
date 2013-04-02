@@ -5,10 +5,10 @@
   Created: Mar 24, 2013  08:43:00 AM
  */
 ?>
+<?php echo $this->element('breadcrumb'); ?> 
 <div>
 
       <h1>Edit Event</h1>
-      <div class="floatRight"><?php echo $this->Html->link('Browse Events', 'index'); ?></div>
       <div class="row">
             <div class="span7 bordered shadowed fullWidth">        
                   <?php date_default_timezone_set('Africa/Lagos'); ?>
@@ -19,6 +19,8 @@
  		  <?php echo $this->Form->input('venue', array('default' => $event['Event']['venue'])); ?>
 		 <?echo $this->Form->input('start', array('type' => 'text', 'label' => 'Starts', 'default' => $event['Event']['start'])); ?>
 		 <?echo $this->Form->input('end', array('type' => 'text', 'label' => 'Ends', 'default' => $event['Event']['end'])); ?>
+
+                <?php echo $this->Form->input('registration_link', array('default' => $event['Event']['registration_link'],'label'=>'Registration Link <em> &nbsp;(fully qualified url)</em>')); ?>
 		<span id="searchLog"></span>
 		<!--
                 <div id="selectedSkills" class="userSkills">
@@ -46,9 +48,34 @@
                   <?php echo $this->Form->submit('Submit'); ?>
                   <?php echo $this->Form->end(); ?>
             </div>
-            <div class="span4 bordered shadowed">
+            <div class="span4 ">
 
-                  Provide context sensitive help/tips here
+                <div class="bordered minH600">
+                        <h4>Latest Events</h4>
+			 <?php if (!$latest_events) { ?>
+                                <div class="alert alert-danger">
+                                        Unfortunately there are no Events.
+                                </div>
+                        <?php } else {?>
+                        <?php
+                        foreach ($latest_events as $latest_event) {
+                        	$latest_eventId = $latest_event['Event']['id'];
+                        ?>
+                        <div class="postedQuestion">
+
+                        <span class="questionTitle"><?php echo $this->Html->link($latest_event['Event']['name'], "viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}"); ?></span>
+                                                        <?php echo $this->Html->link($this->Ev->shortenText($latest_event['Event']['description']),"viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}",array('escape'=>false,'class' => 'textLikeLink')); ?>
+							 <span class="threadLink"><?php echo $this->Html->link('More', "viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}"); ?></span>
+                                                        <div class="clear"></div>       
+                                                        </span>
+                                                        <div class="clear"></div>
+
+                                                </div>
+
+                    <?php }//end for
+		   } //end else
+		   ?>
+                </div>
 
             </div>
       </div>

@@ -169,4 +169,5 @@ $isAnswerable = ($question['Question']['flag'] == 0);
       </div>
 </div>
 
+
 <?php echo $this->element('syntax_highlighter'); ?>

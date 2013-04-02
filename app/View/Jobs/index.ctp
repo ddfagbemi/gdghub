@@ -8,6 +8,7 @@
 
 
 ?>
+<?php echo $this->element('breadcrumb'); ?> 
 <div class="row">
         <div class="span9">
                 <div class="bordered minH600">
@@ -60,16 +61,34 @@
 
                 </div>
         </div>
-    <!--
+    
         <div class="span3">
                 <div class="bordered minH600">
-                        <h4>Tags</h4>
-                        <?php //foreach ($storedTags as $tag) { ?>
-                                <span class="badge badge-success">
-                                        <?php //echo $this->Html->link($tag['Tag']['name'], "index/tag:{$tag['Tag']['id']}", array('escape' => false)); ?>
-                                </span><span class="qCount"> x <?php //echo $tag['QTag']['qcount']; ?> </span> &nbsp;     
-                        <? //} ?>
+                        <h4>Latest Jobs</h4>
+			 <?php if (!$latest_jobs) { ?>
+                                <div class="alert alert-danger">
+                                        Unfortunately there are no Jobs.
+                                </div>
+                        <?php } else {?>
+                        <?php
+                        foreach ($latest_jobs as $latest_job) {
+                        	$latest_jobId = $latest_job['Job']['id'];
+                        ?>
+                        <div class="postedQuestion">
+
+                        <span class="questionTitle"><?php echo $this->Html->link($latest_job['Job']['name'], "viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}"); ?></span>
+                                                        <?php echo $this->Html->link($this->Jv->shortenText($latest_job['Job']['description']),"viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}",array('escape'=>false,'class' => 'textLikeLink')); ?>
+							 <span class="threadLink"><?php echo $this->Html->link('More', "viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}"); ?></span>
+                                                        <div class="clear"></div>       
+                                                        </span>
+                                                        <div class="clear"></div>
+
+                                                </div>
+
+                    <?php }//end for
+		   } //end else
+		   ?>
                 </div>
         </div>
-    -->
+   
 </div>

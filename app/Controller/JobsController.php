@@ -26,7 +26,13 @@ class JobsController extends AppController {
        * 
        */
       function index($sortBy = 'hottest') {
-
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Jobs',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+	    );
             switch ($sortBy) {
                   case 'newest':
                         $orderBy = array('Job.created' => 'DESC'); //Is this the best ?
@@ -77,7 +83,12 @@ class JobsController extends AppController {
 
             $jobIds = $this->Job->extractKeys($jobs);
 
-	    $this->set(compact('jobs'));
+            $latest_jobs = $this->Job->find('all', array('limit' => 5, 'order' => 'Job.created DESC','conditions'=>array(
+                'Job.published' => 1
+            ),));
+
+
+	    $this->set(compact('jobs','latest_jobs','breadcrumbLinks'));
 
             //$questionsTags = $this->QTag->getIndexedTags($questionIds);
 
@@ -93,7 +104,25 @@ class JobsController extends AppController {
       }
       function post() { //post a job
             $this->set('usesAutocomplete',true);
-            $this->set(compact('breadcrumbLinks'));
+
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Jobs',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => 'Post a Job',
+			'link' => 'post',
+			'separator'=> '&raquo;'
+		),
+	    );
+
+ 	    $latest_jobs = $this->Job->find('all', array('limit' => 5, 'order' => 'Job.created DESC','conditions'=>array(
+                'Job.published' => 1
+            ),));
+
+            $this->set(compact('breadcrumbLinks','latest_jobs'));
             $this->_requireAuth();
             //$highlighterSettings = cRead('syntaxHighlighter');
             //$this->set('codeTypes', $highlighterSettings['supportedTypes']);
@@ -151,7 +180,8 @@ class JobsController extends AppController {
 		  $jobData = array(
                       'user_id' => $this->_thisUserId,
                       'name' => Sanitize::stripAll($subData['title']),
-                      'description' => Sanitize::stripAll($subData['description'])
+                      'description' => Sanitize::stripAll($subData['description']),
+                      'registration_link' => Sanitize::stripAll($subData['registration_link'])
                   );
 
 
@@ -217,14 +247,20 @@ class JobsController extends AppController {
        */
       public function viewJob($jobId = '', $jobSlug = '') {
 
-            $job = $this->_getJob($jobId);
-            //$questionTags = $this->QTag->questionTags($questionId);
+           $job = $this->_getJob($jobId);
 
-            //$directComments = $this->QuestionComment->getDirectComments($questionId);
-
-            //$postedAnswers = $this->QuestionComment->getPostedAnswers($questionId);
-
-            //$postedComments = $this->QuestionComment->getPostedComments($questionId);
+	   $breadcrumbLinks = array(
+		array(
+			'label' => 'Jobs',
+			'link' => 'index',
+			'separator'=> '&raquo;'
+		),
+		array(
+			'label' => $job['Job']['name'],
+			'link' => "viewJob/{$job['Job']['id']}/{$job['Job']['slug']}",
+			'separator'=> '&raquo;'
+		),
+	    );
 
             //Let's try to increase the view count
             $jobsViewed = $this->Session->read('jobsViewed');
@@ -238,7 +274,10 @@ class JobsController extends AppController {
                   $this->Job->increaseViewCount($jobId);
             }
 
-            $this->set(compact('jobId', 'jobSlug', 'job'));
+ 	   $latest_jobs = $this->Job->find('all', array('limit' => 5, 'order' => 'Job.created DESC','conditions'=>array(
+                'Job.published' => 1
+            ),));
+            $this->set(compact('jobId', 'jobSlug', 'job','latest_jobs','breadcrumbLinks'));
 
            // if ($question['Question']['flag'] == 0) {
            //       $this->postResponse($questionId, $questionSlug); //To set values into form

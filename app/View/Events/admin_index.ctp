@@ -8,6 +8,7 @@
 
 
 ?>
+<?php echo $this->element('breadcrumb'); ?> 
 <div class="row">
         <div class="span9">
                 <div class="bordered minH600">
@@ -76,8 +77,36 @@
 
                         <?php echo $this->element('paginator'); ?>
 
+         </div>
+         <div class="span3">
+                <div class="bordered minH600">
+                        <h4>Latest Events</h4>
+			 <?php if (!$latest_events) { ?>
+                                <div class="alert alert-danger">
+                                        Unfortunately there are no Events.
+                                </div>
+                        <?php } else {?>
+                        <?php
+                        foreach ($latest_events as $latest_event) {
+                        	$latest_eventId = $latest_event['Event']['id'];
+                        ?>
+                        <div class="postedQuestion">
+
+                        <span class="questionTitle"><?php echo $this->Html->link($latest_event['Event']['name'], "viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}"); ?></span>
+                                                        <?php echo $this->Html->link($this->Ev->shortenText($latest_event['Event']['description']),"viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}",array('escape'=>false,'class' => 'textLikeLink')); ?>
+							 <span class="threadLink"><?php echo $this->Html->link('More', "viewEvent/{$latest_event['Event']['id']}/{$latest_event['Event']['slug']}"); ?></span>
+                                                        <div class="clear"></div>       
+                                                        </span>
+                                                        <div class="clear"></div>
+
+                                                </div>
+
+                    <?php }//end for
+		   } //end else
+		   ?>
                 </div>
         </div>
+
 <div class="modal hide custom-width-modal" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -111,18 +140,8 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Cancel</button>
       </div>
 </div>
-    <!--
-        <div class="span3">
-                <div class="bordered minH600">
-                        <h4>Tags</h4>
-                        <?php //foreach ($storedTags as $tag) { ?>
-                                <span class="badge badge-success">
-                                        <?php //echo $this->Html->link($tag['Tag']['name'], "index/tag:{$tag['Tag']['id']}", array('escape' => false)); ?>
-                                </span><span class="qCount"> x <?php //echo $tag['QTag']['qcount']; ?> </span> &nbsp;     
-                        <? //} ?>
-                </div>
-        </div>
-    -->
+
+</div>
 </div>
 <script type="text/javascript">
 $('#publishModal').on('hidden',function(){

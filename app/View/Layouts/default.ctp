@@ -60,6 +60,14 @@
 
             <?php echo $this->Html->script('lib/modernizr') ?>
 
+	    <?php //widget files for date and time pickers in forms
+		 
+		  echo $this->Html->css('zebra_datepicker');
+		  echo $this->Html->css('timePicker');
+ 
+		 echo $this->Html->script('jquery.timePicker.min');
+		 echo $this->Html->script('zebra_datepicker');
+	   ?>
       </head>
       <body>
             <!--[if lt IE 7]>
@@ -93,6 +101,9 @@
                                           </li>
                                           <li>
                                                 <?php echo $this->Html->link('Jobs', "/Jobs/index"); ?>
+                                          </li>
+                                          <li>
+                                                <?php echo $this->Html->link('Events', "/Events/index"); ?>
                                           </li>
                                           <li>
                                                 <?php echo $this->Html->link('Technology', "/Dashboard/help"); ?>

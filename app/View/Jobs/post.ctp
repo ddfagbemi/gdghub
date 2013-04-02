@@ -5,10 +5,10 @@
   Created: Mar 22, 2013  11:43:00 AM
  */
 ?>
+<?php echo $this->element('breadcrumb'); ?> 
 <div>
 
       <h1>Post A Job</h1>
-      <div class="floatRight"><?php echo $this->Html->link('Browse Jobs', 'index'); ?></div>
       <p>
             This portion should explain the rules and provide tips for posting jobs.
       </p>
@@ -24,6 +24,7 @@
 <?php echo $this->Form->input('selSkills',array('id'=>'selSkills','label'=>'Enter Required Skills Below','required')); ?>
               </div>
                <span id="searchLog"></span>
+                  <?php echo $this->Form->input('registration_link', array('label'=>'Registration Link <em> &nbsp;(fully qualified url)</em>')); ?>
 		<!--
                 <div id="selectedSkills" class="userSkills">
                       <div class="userSkills">
@@ -50,11 +51,39 @@
                   <?php echo $this->Form->submit('Submit'); ?>
                   <?php echo $this->Form->end(); ?>
             </div>
-            <div class="span4 bordered shadowed">
+ <div class="span4">
 
-                  Provide context sensitive help/tips here
+                        
+                <div class="bordered minH600">
+                        <h4>Latest Jobs</h4>
+			 <?php if (!$latest_jobs) { ?>
+                                <div class="alert alert-danger">
+                                        Unfortunately there are no Jobs.
+                                </div>
+                        <?php } else{ ?>
+                        <?php
+                        foreach ($latest_jobs as $latest_job) {
+                        	$latest_jobId = $latest_job['Job']['id'];
+                        ?>
+                        <div class="postedQuestion">
+
+                        <span class="questionTitle"><?php echo $this->Html->link($latest_job['Job']['name'], "viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}"); ?></span>
+                                                        <?php echo $this->Html->link($this->Jv->shortenText($latest_job['Job']['description']),"viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}",array('escape'=>false,'class' => 'textLikeLink')); ?>
+							 <span class="threadLink"><?php echo $this->Html->link('More', "viewJob/{$latest_job['Job']['id']}/{$latest_job['Job']['slug']}"); ?></span>
+                                                        <div class="clear"></div>       
+                                                        
+                                                        <div class="clear"></div>
+
+                                                </div>
+
+                       <?php }
+		       }
+			?>
+                </div>
+        
 
             </div>
+           
       </div>
 </div>
 

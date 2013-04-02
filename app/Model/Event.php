@@ -63,6 +63,7 @@ class Event extends AppModel {
 			'venue' => $eventData['venue'],
 			'start' => $eventData['start'],
 			'end' => $eventData['end'],
+			'registration_link' => $eventData['registration_link'],
 
 	       ));
 	       $this->save();
