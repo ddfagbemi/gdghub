@@ -68,5 +68,27 @@ class Job extends AppModel {
                 
         }
 
+
+	function setJobStatus($jobData,$jobId){
+	       $this->read(null,$jobId);
+	       $this->set('published',$jobData);
+	       $this->save();
+        }
+
+	function editJob($jobData,$jobId){
+	      
+ 	       $this->read(null,$jobId);
+	       $this->set( array(
+			'name' => $jobData['name'],
+			'description' => $jobData['description'],
+			'registration_link' => $jobData['registration_link'],
+
+	       ));
+	       $this->save();
+//               $query="UPDATE events set published=$eventData where id='$eventId'";
+  //             $this->query($query);
+        }
+
+
 }
 ?>

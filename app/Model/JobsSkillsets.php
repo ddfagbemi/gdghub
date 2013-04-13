@@ -61,8 +61,16 @@ class JobsSkillsets extends AppModel {
         }
         function removeSkill($jobId,$skillId){
               $conditions=  array(
-                  'JobsSkill.skillset_id'=>$skillId,
-                  'JobsSkill.job_id'=>$jobId
+                  'JobsSkillsets.skillset_id'=>$skillId,
+                  'JobsSkillsets.job_id'=>$jobId
+              );
+              
+              $this->deleteAll($conditions);
+              
+        }
+        function removeAllJobSkills($jobId){
+              $conditions=  array(
+                  'JobsSkillsets.job_id'=>$jobId,
               );
               
               $this->deleteAll($conditions);
