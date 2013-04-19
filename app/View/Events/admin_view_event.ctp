@@ -5,6 +5,10 @@
   Created: Mar 24, 2013  05:42:47 AM
 
 */
+require('googlecalendar_classes/date.class.php');
+require('googlecalendar_classes/Dates.class.php');
+require('googlecalendar_classes/GoogleCalendar.class.php');
+
 ?>
 <?php echo $this->element('breadcrumb'); ?> 
 <div class="row">
@@ -13,6 +17,30 @@
                   <h1 class="questionTitle">
                         <?php echo $event['Event']['name']; ?>
                   </h1>
+		  <?php
+                  //converting mysql datetime into googlecalendar's expected time format
+		  //"2012-12-31 20:00:00" to "20121231T200000Z"
+		  $start_date = $event['Event']['start'];
+		  $start_date = str_replace("-","",$start_date);
+		  $start_date = str_replace(":","",$start_date);
+		  $start_date = str_replace(" ","T",$start_date);
+		  $start_date = $start_date."Z";
+
+		  $end_date = $event['Event']['end'];
+		  $end_date = str_replace("-","",$end_date);
+		  $end_date = str_replace(":","",$end_date);
+		  $end_date = str_replace(" ","T",$end_date);
+		  $end_date = $end_date."Z";
+							
+		  $params = array('title' => $event['Event']['name'],
+		     'datetime' => array('start' => $start_date, 'end' => $end_date),
+		     'location' => $event['Event']['venue'],
+		     'description' => $event['Event']['description']
+		      );
+		    //$link = 
+	            $gCal = GoogleCalendar::createEventReminder($params);
+		  echo "$gCal"."&nbsp;";
+		  ?> 
                   <div class="questionQuestion">
                         <?php
                         $fullDescription = $event['Event']['description'];
